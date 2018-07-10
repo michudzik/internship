@@ -1032,16 +1032,22 @@ Scope
 scope :old, -> { where("created_at < ?", 40.minutes.ago) }
 ```
 
+
+
+Nie modyfikujemy migracji, która weszła w życie
+
+app/models
+### Baza danych
+Kolumny które są kluczami obcymi dobrze by było gdyby były indeksowane.
+Jeśli tworzymy powiązanie między tablicami nazywamy foreign_key w sposób xxx_id. xxx nazwa modelu powiązanego
+
 Asocjacje - relacje między tablicami
 post - autor
 1 - 1
 1 - wiele
 wiele - wiele (dodatkowa tablica do przechowywania powiązań)
 
-Nie modyfikujemy migracji, która weszła w życie
 
-app/models
-### Baza danych
 
 ## Kontroler, widoki
 
