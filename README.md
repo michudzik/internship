@@ -806,26 +806,248 @@ $ git pull
 ```
 #### Usuwanie branchy
 ```
-$ git branche -d <name>
+$ git branch -d <name>
 ```
 ## RVM
 Ruby Version Manager
 Zarządzanie wersjami ruby'ego - wydziela na to osobną przestrzeń. Projekty mogą mieć inne wersje, dlatego przydaje się opcja, żeby móc obsługiwać parę wersji.
+```
+$ rvm list #=> listuje wersje ruby'ego
+.
+.
+.
+```
 
 ### Gemsety
 Gem - biblioteka
 Gemset - zestaw bibliotek
-# Model, Baza danych
 
-## Model
+# Podstawy Ruby on Rails
+## Przydatne linki
+- http://guides.rubyonrails.org/
+- http://api.rubyonrails.org/
 
-## Baza danych
+## Zasoby
+public/ - statyczne strony
+Jeśli request nie idzie na zasób który jest statyczny to przekazywane dalej do controllera.
 
-# Kontroler, widoki
+Kontroler - klasa - logika aplikacji
+Model - klasa - reprezentuje dane
+View - widoki
 
-## Kontroler
+Bundler - menadżer gemów
+```
+$ gem install bundler
+```
 
-## Widoki
+## Architektura
+Wzór projektowy - MVC(Model, View, Controller)
+## Tworzenie apki
+```
+$ rails new <nazwa>
+```
+## Konsola railsowa
+```
+$ rails console
+$ rails c
+```
+## Model, Baza danych
+
+### Model
+Pliki snake_case nazwa.
+
+Klasa. Dziedziczy po ActiveRecord::Base(ORM - Object Relational Model) - pozwala na rzutowanie na bazy danych.
+Budowaniem zapytań zajmuje się ORM.
+Base - Klasa z której dziedziczą wszystkie modele
+
+Model odzwierciedla tablicę w bazie danych.
+Rekord to instancja obiektu. Nie musimy tworzyć atrybutów danej klasy. Są one mapowane z tablicy.
+Tablica musi odpowiadać modelowi.
+
+Model - Post (Zawsze w liczbie pojedynczej)
+Tablic - Posts (Zawsze w liczbie mnogiej)
+
+Generowanie migracji
+```
+$ rails generate migration create_<model>
+$ rails generate migration CreateAuthors name:string surname:string age:integer
+
+```
+Wprowadzanie migracji
+```
+$ rails db:migrate
+```
+Wycofywanie migracji
+```
+$ rails db:rollback
+```
+Migracja - klasa implementująca metodę change
+
+Mass initializer
+```
+2.5.1 :012 > Post.new(title: 'drugi post', content: 'inny kontent', author: 'drugi autor')
+```
+
+Deklaracja metody statycznej - self. przed metodą
+```
+def self.nazwa_metody
+end
+```
+
+
+Tworzenie obiektu klasy
+```
+Klasa.new
+Klasa.save
+```
+Zamiast new i save
+```
+Klasa.create
+```
+
+Sprawdzenie czy zapisanie
+```
+zmienna_przechowująca.persisted?
+```
+
+Wyszukiwanie
+```
+Klasa.all           #=> Wszystkie instancje zwraca ActiveRecord::Relation (Array na sterydach)
+Klasa.all.count     #=> Ilość obiektów
+Klasa.count         #=> Ilość obiektów
+Klasa.first
+Klasa.last
+Klasa.find(<integer>)
+Klasa.where(symbol: <czego_szukamy>)    #=> Można używać logiki
+2.5.1 :028 > Post.where('created_at > ?', 2018-07-10)
+```
+
+```
+Time.now
+DateTime.now
+DateTime.now - 2.weeks
+2.weeks.ago
+56.minuts.ago
+```
+
+Edycja obiektów
+```
+2.5.1 :034 > post = Post.last
+  Post Load (0.3ms)  SELECT  "posts".* FROM "posts" ORDER BY "posts"."id" DESC LIMIT ?  [["LIMIT", 1]]
+ => #<Post id: 3, title: "trzeci post", content: "inny kontent", author: "drugi autor", created_at: "2018-07-10 11:09:47", updated_at: "2018-07-10 11:09:47"> 
+2.5.1 :035 > post.title = 'zmiana'
+ => "zmiana" 
+2.5.1 :036 > post
+ => #<Post id: 3, title: "zmiana", content: "inny kontent", author: "drugi autor", created_at: "2018-07-10 11:09:47", updated_at: "2018-07-10 11:09:47"> 
+2.5.1 :037 > post.save
+   (0.1ms)  begin transaction
+  Post Update (2.6ms)  UPDATE "posts" SET "title" = ?, "updated_at" = ? WHERE "posts"."id" = ?  [["title", "zmiana"], ["updated_at", "2018-07-10 11:31:03.001848"], ["id", 3]]
+   (23.2ms)  commit transaction
+ => true 
+2.5.1 :038 > post.update(title: 'druga zmiana', content: 'inny kontent')
+   (0.1ms)  begin transaction
+  Post Update (3.1ms)  UPDATE "posts" SET "title" = ?, "updated_at" = ? WHERE "posts"."id" = ?  [["title", "druga zmiana"], ["updated_at", "2018-07-10 11:31:37.868989"], ["id", 3]]
+   (22.0ms)  commit transaction
+ => true 
+```
+Edycja obiektów - wszystkie instancje dla klasy
+```
+2.5.1 :040 > Post.update_all(author: 'zmieniony')
+  Post Update All (23.2ms)  UPDATE "posts" SET "author" = 'zmieniony'
+ => 3 
+```
+
+Usuwanie obiektów
+```
+2.5.1 :041 > Post.find(1)
+  Post Load (0.3ms)  SELECT  "posts".* FROM "posts" WHERE "posts"."id" = ? LIMIT ?  [["id", 1], ["LIMIT", 1]]
+ => #<Post id: 1, title: "cokolwiek", content: "content", author: "zmieniony", created_at: "2018-07-10 11:00:15", updated_at: "2018-07-10 11:00:15"> 
+2.5.1 :042 > post = _
+ => #<Post id: 1, title: "cokolwiek", content: "content", author: "zmieniony", created_at: "2018-07-10 11:00:15", updated_at: "2018-07-10 11:00:15"> 
+2.5.1 :043 > post.destroy
+   (0.1ms)  begin transaction
+  Post Destroy (2.5ms)  DELETE FROM "posts" WHERE "posts"."id" = ?  [["id", 1]]
+   (25.7ms)  commit transaction
+ => #<Post id: 1, title: "cokolwiek", content: "content", author: "zmieniony", created_at: "2018-07-10 11:00:15", updated_at: "2018-07-10 11:00:15"> 
+```
+
+id - integer auto_increment primary_key
+primary_key - identyfikuje obiekty, każdy jest unikalny
+
+Baza danych SQLite
+
+4 Role:
+- Reprezentacja danych (atrybuty)
+- Porozumiewanie z bazą danych
+- Walidacja danych
+- Reprezentacja asocjacji (Powiązanie z innymi modelami w systemi - w jaki sposób itd)
+
+Walidacje - sprawdzanie danych
+Nie pozwoli zapisać jeśli któraś z walidacji nie jest spełniona
+- http://guides.rubyonrails.org/active_record_validations.html
+```
+class Post < ActiveRecord::Base
+  validates :title, presence: true
+  validates :title, uniqueness: true
+  validates :title, length: { maximum: 80 }
+  validates :content, presence: true
+  validates :content, length: { in: 10..500 }
+  validates :author, presence: true
+end
+```
+
+~ Walidator formatu - z wyrażeniem regularnym (regex)
+W errors przechowywane wiadomości błędów
+
+```
+2.5.1 :001 > post = Post.new
+ => #<Post id: nil, title: nil, content: nil, author: nil, created_at: nil, updated_at: nil> 
+2.5.1 :002 > post.save
+   (0.1ms)  begin transaction
+  Post Exists (0.2ms)  SELECT  1 AS one FROM "posts" WHERE "posts"."title" IS NULL LIMIT ?  [["LIMIT", 1]]
+   (0.2ms)  rollback transaction
+ => false 
+2.5.1 :003 > post.errors
+ => #<ActiveModel::Errors:0x00007f98bc908628 @base=#<Post id: nil, title: nil, content: nil, author: nil, created_at: nil, updated_at: nil>, @messages={:title=>["can't be blank"], :content=>["can't be blank", "is too short (minimum is 10 characters)"], :author=>["can't be blank"]}, @details={:title=>[{:error=>:blank}], :content=>[{:error=>:blank}, {:error=>:too_short, :count=>10}], :author=>[{:error=>:blank}]}> 
+2.5.1 :004 > post.errors.full_messages
+ => ["Title can't be blank", "Content can't be blank", "Content is too short (minimum is 10 characters)", "Author can't be blank"] 
+ 2.5.1 :005 > post.errors.messages
+ => {:title=>["can't be blank"], :content=>["can't be blank", "is too short (minimum is 10 characters)"], :author=>["can't be blank"]} 
+ 2.5.1 :006 > post.errors.messages.inspect
+ => "{:title=>[\"can't be blank\"], :content=>[\"can't be blank\", \"is too short (minimum is 10 characters)\"], :author=>[\"can't be blank\"]}" 
+```
+
+Callback
+```
+before_create :annotate_author
+
+def annotate_author
+  self.author = "#{author} from Binar::Apps"
+end
+```
+
+Scope
+```
+# Wyszukiwanie ze specyficznymi parametrami
+scope :old, -> { where("created_at < ?", 40.minutes.ago) }
+```
+
+Asocjacje - relacje między tablicami
+post - autor
+1 - 1
+1 - wiele
+wiele - wiele (dodatkowa tablica do przechowywania powiązań)
+
+Nie modyfikujemy migracji, która weszła w życie
+
+app/models
+### Baza danych
+
+## Kontroler, widoki
+
+### Kontroler
+
+### Widoki
 
 # Ciekawostki
 
