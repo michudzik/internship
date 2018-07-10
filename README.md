@@ -736,11 +736,85 @@ $ git log
 
 ### Dodawanie
 ```
-$ git add
+$ git add -A
+$ git add .
+$ git add <nazwa_pliku>
 ```
-## GitHub
-## RVM
 
+### Commit
+Lepiej więcej mniejszych commitów
+
+```
+$ git commit -m "Message"
+```
+#### Jak napisać dobry commit message
+- Po angielsku
+- Podział na 2 elementy
+  -> nazwa (name) max. 80 znaków - jaki problem rozwiązuje (opcjonalnie używać tagów [add][fix])
+  -> opis (description) - dwa entery poniżej name. Nie techniczne, dlaczego co zrobiliśmy, jaki problem rozwiązaliśmy. Historyjka rozwiązania problemu.
+  Warto odnosić się do innych commitów(Np kiedy wykryto buga którego fixujemy)
+
+  Wyprzedzamy kontrowersje, przyznajemy się do błedów.
+
+## GitHub
+
+### Pull request
+Sprawdzanie kodu przed zmergowaniem do masteru przez osobę trzecią.
+
+### Squash (?)
+
+### Remote
+```
+$ git remote add <serwer_itd>
+```
+
+### Pushowanie
+```
+$ git push origin master
+```
+
+### Branch - praca w zespole
+Gałęzie rozwojowe. Podział jak dodajemy feature, naprawiamy bugi itd...
+Zazwyczaj na początku branch staging / beta. - tesotowanie i developerka.
+Feature'y dodajemy od stagingu, idzie obok mastera.
+Master - kod idzie na produkcje
+
+#### Podglądanie branch'y
+```
+$ git branch
+```
+
+#### Tworzenie i przeniesienie na branch
+```
+$ git checkout -b <name>
+```
+#### Tworzenie
+```
+$ git branch <name>
+```
+#### Przeniesienie na brancha
+```
+$ git checkout <name>
+```
+#### Zapisywanie zmian w masterze np
+```
+$ git merge <name>
+```
+#### Pobieranie zmian
+```
+$ git pull
+```
+#### Usuwanie branchy
+```
+$ git branche -d <name>
+```
+## RVM
+Ruby Version Manager
+Zarządzanie wersjami ruby'ego - wydziela na to osobną przestrzeń. Projekty mogą mieć inne wersje, dlatego przydaje się opcja, żeby móc obsługiwać parę wersji.
+
+### Gemsety
+Gem - biblioteka
+Gemset - zestaw bibliotek
 # Model, Baza danych
 
 ## Model
