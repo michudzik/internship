@@ -105,7 +105,6 @@ irb(main):016:0> (3 + 4) * 12
 ```
 
 # Typy danych
-
 ## String
 Do deklaracji "", ''
 Jedno pozwala na interpolację stringów, drugie nie.
@@ -580,8 +579,41 @@ end
 
 ## Atrybuty
 Dane które przechowuje dana klasa
+## Zmienne
+### Zakres
+#### Zmienna lokalna
+```
+title
+```
+#### Zmienna instancji klasy
+```
+@title
+```
+
+#### Zmienne klasy
+Dostęp z innych instancji klasy
+```
+@@title
+```
+
+#### Zmienne globalne
+```
+$title
+```
+
+### Stałe
+Używamy upcase'a żeby określić stałą
+```
+TITLE
+```
+
 ## Metody
 Akscesory i inne. Operacje które może wykonać obiekt
+### Zakresy
+- publiczne (public)    - domyślnie
+- prywatne  (private)   - metody dostępne tylko dla danej klasy - kompozycje logiki dla metod publicznych. Robimy jedną metodę publiczną
+                          składającą się z wywołania wielu metod prywatnych. Podział metody na podkonteksty. Nie są dziedziczone.
+- chronione (protected) - działa jak private, róznica taka, że klasy dziedziczące również mają dostęp do tej metody
 
 ```
 class Animal
@@ -1037,6 +1069,7 @@ scope :old, -> { where("created_at < ?", 40.minutes.ago) }
 Nie modyfikujemy migracji, która weszła w życie
 
 app/models
+
 ### Baza danych
 Kolumny które są kluczami obcymi dobrze by było gdyby były indeksowane.
 Jeśli tworzymy powiązanie między tablicami nazywamy foreign_key w sposób xxx_id. xxx nazwa modelu powiązanego
@@ -1047,13 +1080,67 @@ post - autor
 1 - wiele
 wiele - wiele (dodatkowa tablica do przechowywania powiązań)
 
-
-
 ## Kontroler, widoki
+### CRUD - zestaw operacji na modelu:
+ - C - create
+ - R - read
+ - U - update
+ - D - delete
 
+HTTP - działa na zasadzie pytanie odpowiedź
+
+Request składa się z:
+  - Adres
+  - Czasownik
+  - Nagłówek
+  - Body (Payload)
+
+Odpowiedź:
+  - Nagłówek
+  - Body
+  - Status
+    -> 4xx - błędy po stronie klienta
+    -> 5xx - błędy po stronie serwera
+
+Metody HTTP:
+  - GET      - pobieranie zasobów z serwera
+  - HEAD
+  - POST     - wysyłanie danych na serwer (np.: z formularza)
+  - PUT      - wymienia cały obiekt (który istniał)
+  - PATCH    - część obiektu zostaje updatowanie
+  - TRACE
+  - OPTIONS
+  - DELETE   - usuwanie zasobu
+  - TRACE
+
+Struktura URL
+protocol://subdomain.domain.domain_extension/resource?query_parameters
 ### Kontroler
+Klasa, akcja jako metoda.
+Nazwa metody taka sama jak widoku.
+Przed działaniem zmienić plik routes.rb w katalogu config/
+
+Akcje:
+- Show (id)       - GET
+- Index           - GET
+- New (Formularz) - GET
+- Create          - POST
+- Edit            - GET
+- Update          - PUT / PATCH
+- Destroy(id)     - DELETE
+
+Zmienne w routes.rb
+```
+GET /authors/:id
+/authors/3
+```
+znajduje się pod params[:id]
 
 ### Widoki
+```
+<% %> # Wywołanie kodu
+<%= %> # Wywołanie kodu + zwrócenie
+```
 
 # Ciekawostki
 
