@@ -1,5 +1,6 @@
 # Dziedziczenie
 class Animal
+  CONSTANT = 'Mystala'
   attr_accessor :name, :age
 
   def initialize(name, age)
@@ -29,3 +30,5 @@ reksio.speak
 
 filemon = Cat.new('Filemon', 5)
 filemon.speak
+
+puts Animal::CONSTANT
